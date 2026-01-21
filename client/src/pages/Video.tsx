@@ -173,22 +173,11 @@ export default function Video() {
       {/* Header */}
       <header className="bg-white border-b border-[#e5e7eb] py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-center">
-          <div className="flex items-center gap-4">
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Canção_Nova_logo.svg/200px-Canção_Nova_logo.svg.png" 
-              alt="Canção Nova" 
-              className="h-8 opacity-60"
-            />
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Rede_Vida_logo.svg/200px-Rede_Vida_logo.svg.png" 
-              alt="Rede Vida" 
-              className="h-8 opacity-60"
-            />
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/TV_Horizonte_logo.svg/200px-TV_Horizonte_logo.svg.png" 
-              alt="TV Horizonte" 
-              className="h-8 opacity-60"
-            />
+          <div className="flex items-center gap-2 md:gap-4 flex-wrap justify-center">
+            <span className="text-xs md:text-sm font-semibold text-[#666] opacity-80">Visto em:</span>
+            <span className="text-xs md:text-sm font-semibold text-[#d4af37]">Cancao Nova</span>
+            <span className="text-xs md:text-sm font-semibold text-[#d4af37]">Rede Vida</span>
+            <span className="text-xs md:text-sm font-semibold text-[#d4af37]">TV Horizonte</span>
           </div>
         </div>
       </header>
@@ -250,10 +239,10 @@ export default function Video() {
                 
                 <Button
                   onClick={handleCTAClick}
-                  className="w-full bg-gradient-to-r from-[#d4af37] to-[#b8962e] hover:from-[#c9a432] hover:to-[#a88526] text-white font-bold py-5 px-8 rounded-xl text-lg shadow-lg hover:shadow-xl transition-all"
+                  className="w-full bg-gradient-to-r from-[#d4af37] to-[#b8962e] hover:from-[#c9a432] hover:to-[#a88526] text-white font-bold py-3 px-6 rounded-xl text-base md:text-lg shadow-lg hover:shadow-xl transition-all overflow-hidden"
                 >
-                  <span className="flex flex-col items-center gap-1">
-                    <span>🙏 QUERO RECEBER MINHA UNÇÃO</span>
+                  <span className="flex flex-col items-center gap-1 text-center">
+                    <span className="text-sm md:text-base">🙏 QUERO RECEBER MINHA UNCAO</span>
                     <span className="text-xs font-normal opacity-90">Pagamento 100% Seguro via PIX</span>
                   </span>
                 </Button>
