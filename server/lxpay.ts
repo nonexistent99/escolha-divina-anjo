@@ -145,15 +145,25 @@ export async function createPixPayment(
     );
 
     console.log("[LX Pay] PIX payment created successfully");
+    
+    // A API LX Pay retorna:
+    // - QR Code em base64 no campo 'pix.base64'
+    // - Código PIX em 'pix.code'
+    const qrCodeBase64 = response.data.pix?.base64 || '';
+    const copyPasteCode = response.data.pix?.code || '';
+    
     return {
       transactionId: response.data.transactionId,
       status: response.data.status,
-      order: response.data.order,
+      order: response.data.order || {
+        id: response.data.transactionId,
+        amount: params.amount,
+      },
       pix: {
-        qrCode: response.data.pix.qrCode,
-        copyPaste: response.data.pix.copyPaste,
+        qrCode: qrCodeBase64,
+        copyPaste: copyPasteCode,
         expiresAt:
-          response.data.pix.expiresAt ||
+          response.data.expiresAt ||
           new Date(Date.now() + 30 * 60 * 1000).toISOString(),
       },
     };
