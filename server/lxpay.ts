@@ -45,17 +45,70 @@ interface PixPaymentResponse {
   };
 }
 
-export async function createPixPayment(params: CreatePixPaymentParams): Promise<PixPaymentResponse> {
+// Valida CPF usando o algoritmo de dígito verificador
+function isValidCPF(cpf: string): boolean {
+  // Remove caracteres não numéricos
+  const cleanCPF = cpf.replace(/\D/g, "");
+
+  // Deve ter 11 dígitos
+  if (cleanCPF.length !== 11) return false;
+
+  // Não pode ter todos os dígitos iguais
+  if (/^(\d)\1{10}$/.test(cleanCPF)) return false;
+
+  // Validar primeiro dígito verificador
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    sum += parseInt(cleanCPF[i]) * (10 - i);
+  }
+  let remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cleanCPF[9])) return false;
+
+  // Validar segundo dígito verificador
+  sum = 0;
+  for (let i = 0; i < 10; i++) {
+    sum += parseInt(cleanCPF[i]) * (11 - i);
+  }
+  remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cleanCPF[10])) return false;
+
+  return true;
+}
+
+export async function createPixPayment(
+  params: CreatePixPaymentParams
+): Promise<PixPaymentResponse> {
   const { publicKey, secretKey } = getApiKeys();
-  
+
   if (!publicKey || !secretKey) {
     // Modo de demonstração quando as chaves não estão configuradas
     console.warn("[LX Pay] API keys not configured, returning demo data");
     return await generateDemoPixResponse(params);
   }
 
+  // Validar CPF antes de enviar
+  if (!isValidCPF(params.client.document)) {
+    console.warn(
+      "[LX Pay] Invalid CPF provided, using demo mode:",
+      params.client.document
+    );
+    return await generateDemoPixResponse(params);
+  }
+
   const identifier = `${Date.now()}${nanoid(10)}`;
-  
+
+  // Log para debug
+  console.log("[LX Pay] Creating PIX payment with:", {
+    identifier,
+    amount: params.amount,
+    clientName: params.client.name,
+    clientEmail: params.client.email,
+    clientDocument: params.client.document,
+    documentLength: params.client.document.length,
+  });
+
   try {
     const response = await axios.post(
       `${LXPAY_API_URL}/api/v1/gateway/pix/receive`,
@@ -91,6 +144,7 @@ export async function createPixPayment(params: CreatePixPaymentParams): Promise<
       }
     );
 
+    console.log("[LX Pay] PIX payment created successfully");
     return {
       transactionId: response.data.transactionId,
       status: response.data.status,
@@ -98,20 +152,28 @@ export async function createPixPayment(params: CreatePixPaymentParams): Promise<
       pix: {
         qrCode: response.data.pix.qrCode,
         copyPaste: response.data.pix.copyPaste,
-        expiresAt: response.data.pix.expiresAt || new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+        expiresAt:
+          response.data.pix.expiresAt ||
+          new Date(Date.now() + 30 * 60 * 1000).toISOString(),
       },
     };
-  } catch (error) {
-    console.error("[LX Pay] Error creating PIX payment:", error);
+  } catch (error: any) {
+    console.error("[LX Pay] Error creating PIX payment:", {
+      message: error?.message,
+      status: error?.response?.status,
+      data: error?.response?.data,
+    });
     // Em caso de erro, retorna dados de demonstração
     console.warn("[LX Pay] Falling back to demo mode due to API error");
     return await generateDemoPixResponse(params);
   }
 }
 
-export async function checkPaymentStatus(transactionId: string): Promise<{ status: string; paid: boolean }> {
+export async function checkPaymentStatus(
+  transactionId: string
+): Promise<{ status: string; paid: boolean }> {
   const { publicKey, secretKey } = getApiKeys();
-  
+
   if (!publicKey || !secretKey) {
     // Modo de demonstração
     return { status: "pending", paid: false };
@@ -130,7 +192,9 @@ export async function checkPaymentStatus(transactionId: string): Promise<{ statu
 
     return {
       status: response.data.status,
-      paid: response.data.status === "paid" || response.data.status === "approved",
+      paid:
+        response.data.status === "paid" ||
+        response.data.status === "approved",
     };
   } catch (error) {
     console.error("[LX Pay] Error checking payment status:", error);
@@ -139,18 +203,20 @@ export async function checkPaymentStatus(transactionId: string): Promise<{ statu
 }
 
 // Gera dados de demonstração quando as chaves da API não estão configuradas
-async function generateDemoPixResponse(params: CreatePixPaymentParams): Promise<PixPaymentResponse> {
+async function generateDemoPixResponse(
+  params: CreatePixPaymentParams
+): Promise<PixPaymentResponse> {
   const transactionId = `demo_${nanoid(20)}`;
-  
+
   // Gera um QR Code PIX de demonstração (base64 de uma imagem placeholder)
   // Nota: Esta função agora é async, então precisamos tratar isso
-  let demoQrCode = '';
+  let demoQrCode = "";
   try {
     demoQrCode = await generateDemoQrCodeBase64();
   } catch (error) {
-    console.error('Erro ao gerar QR Code de demonstração:', error);
+    console.error("Erro ao gerar QR Code de demonstração:", error);
   }
-  
+
   // Gera um código PIX copia-cola de demonstração
   const demoCopyPaste = `00020126580014br.gov.bcb.pix0136${nanoid(36)}5204000053039865406${params.amount.toFixed(2)}5802BR5925ESCOLHA DIVINA LTDA6009SAO PAULO62070503***6304`;
 
@@ -173,25 +239,25 @@ async function generateDemoPixResponse(params: CreatePixPaymentParams): Promise<
 async function generateDemoQrCodeBase64(): Promise<string> {
   try {
     // Gera um código PIX válido para o QR Code
-    const pixCode = `00020126580014br.gov.bcb.pix0136${nanoid(36)}5204000053039865406${(29.90).toFixed(2)}5802BR5925ESCOLHA DIVINA LTDA6009SAO PAULO62070503***6304`;
-    
+    const pixCode = `00020126580014br.gov.bcb.pix0136${nanoid(36)}5204000053039865406${(29.9).toFixed(2)}5802BR5925ESCOLHA DIVINA LTDA6009SAO PAULO62070503***6304`;
+
     // Gera o QR Code como PNG em base64
     const qrCodeDataUrl = await QRCode.toDataURL(pixCode, {
-      errorCorrectionLevel: 'H',
-      type: 'image/png',
+      errorCorrectionLevel: "H",
+      type: "image/png",
       width: 300,
       margin: 1,
       color: {
-        dark: '#000000',
-        light: '#FFFFFF',
+        dark: "#000000",
+        light: "#FFFFFF",
       },
     });
-    
+
     // Remove o prefixo data:image/png;base64, para retornar apenas o base64
-    return qrCodeDataUrl.split(',')[1] || '';
+    return qrCodeDataUrl.split(",")[1] || "";
   } catch (error) {
-    console.error('Erro ao gerar QR Code:', error);
+    console.error("Erro ao gerar QR Code:", error);
     // Retorna um placeholder em caso de erro
-    return '';
+    return "";
   }
 }
