@@ -7,8 +7,14 @@ import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+let __dirname: string;
+try {
+  const __filename = fileURLToPath(import.meta.url);
+  __dirname = path.dirname(__filename);
+} catch {
+  // Fallback when running in bundled context
+  __dirname = process.cwd();
+}
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
