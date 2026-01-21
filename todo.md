@@ -25,3 +25,6 @@
 - [x] Paleta dourada e branca
 - [x] Elementos gráficos celestiais
 - [x] Visual clean e impactante
+## Bugs Reportados
+
+- [x] Botão CTA "SE VOCÊ PRECISA DE UM MILAGRE..." está fora de escala/saindo da tela

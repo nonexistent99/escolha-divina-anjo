@@ -363,11 +363,11 @@ export default function Home() {
           
           <Button
             onClick={handleCTAClick}
-            className="btn-divine w-full text-lg py-6 animate-glow"
+            className="btn-divine w-full text-base md:text-lg py-6 animate-glow"
           >
-            <span className="flex items-center justify-center gap-2">
-              <Dove className="w-6 h-6" />
-              Se você precisa de um MILAGRE, clique aqui para ver o vídeo que mudará sua vida
+            <span className="flex flex-col md:flex-row items-center justify-center gap-2 text-center leading-tight">
+              <Dove className="w-6 h-6 shrink-0 hidden md:block" />
+              <span className="uppercase font-bold">SE VOCÊ PRECISA DE UM MILAGRE, CLIQUE AQUI PARA VER O VÍDEO QUE MUDARÁ SUA VIDA</span>
             </span>
           </Button>
         </div>
