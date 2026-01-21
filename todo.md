@@ -34,3 +34,8 @@
 
 ## Bugs Pendentes
 - [x] Card de oferta "5 Palavras Ungidas" está fora de escala/saindo do container
+
+
+## Bugs Novos
+- [x] SyntaxError: Unexpected token no console (chrome-extension://j…ntent_reporter.js:1) - Erro da extensão do Chrome, não afeta o site
+- [x] Falha ao carregar recurso: servidor respondeu com status 404 (fonte WOFF2) - Corrigido adicionando Google Fonts
