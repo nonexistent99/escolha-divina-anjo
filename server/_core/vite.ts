@@ -52,10 +52,16 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
+  if (!__dirname) {
+    console.error("ERROR: __dirname is undefined in serveStatic");
+    process.exit(1);
+  }
+  
   const distPath =
     process.env.NODE_ENV === "development"
       ? path.resolve(__dirname, "../..", "dist", "public")
       : path.resolve(__dirname, "public");
+  
   if (!fs.existsSync(distPath)) {
     console.error(
       `Could not find the build directory: ${distPath}, make sure to build the client first`
@@ -66,6 +72,11 @@ export function serveStatic(app: Express) {
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+    const indexPath = path.resolve(distPath, "index.html");
+    if (!indexPath) {
+      res.status(500).send("Error: index.html path is undefined");
+      return;
+    }
+    res.sendFile(indexPath);
   });
 }
