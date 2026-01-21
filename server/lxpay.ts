@@ -1,5 +1,6 @@
 import axios from "axios";
 import { nanoid } from "nanoid";
+import QRCode from "qrcode";
 
 const LXPAY_API_URL = "https://api.lxpay.com.br";
 
@@ -50,7 +51,7 @@ export async function createPixPayment(params: CreatePixPaymentParams): Promise<
   if (!publicKey || !secretKey) {
     // Modo de demonstração quando as chaves não estão configuradas
     console.warn("[LX Pay] API keys not configured, returning demo data");
-    return generateDemoPixResponse(params);
+    return await generateDemoPixResponse(params);
   }
 
   const identifier = `${Date.now()}${nanoid(10)}`;
@@ -104,7 +105,7 @@ export async function createPixPayment(params: CreatePixPaymentParams): Promise<
     console.error("[LX Pay] Error creating PIX payment:", error);
     // Em caso de erro, retorna dados de demonstração
     console.warn("[LX Pay] Falling back to demo mode due to API error");
-    return generateDemoPixResponse(params);
+    return await generateDemoPixResponse(params);
   }
 }
 
@@ -138,11 +139,17 @@ export async function checkPaymentStatus(transactionId: string): Promise<{ statu
 }
 
 // Gera dados de demonstração quando as chaves da API não estão configuradas
-function generateDemoPixResponse(params: CreatePixPaymentParams): PixPaymentResponse {
+async function generateDemoPixResponse(params: CreatePixPaymentParams): Promise<PixPaymentResponse> {
   const transactionId = `demo_${nanoid(20)}`;
   
   // Gera um QR Code PIX de demonstração (base64 de uma imagem placeholder)
-  const demoQrCode = generateDemoQrCodeBase64();
+  // Nota: Esta função agora é async, então precisamos tratar isso
+  let demoQrCode = '';
+  try {
+    demoQrCode = await generateDemoQrCodeBase64();
+  } catch (error) {
+    console.error('Erro ao gerar QR Code de demonstração:', error);
+  }
   
   // Gera um código PIX copia-cola de demonstração
   const demoCopyPaste = `00020126580014br.gov.bcb.pix0136${nanoid(36)}5204000053039865406${params.amount.toFixed(2)}5802BR5925ESCOLHA DIVINA LTDA6009SAO PAULO62070503***6304`;
@@ -162,26 +169,29 @@ function generateDemoPixResponse(params: CreatePixPaymentParams): PixPaymentResp
   };
 }
 
-// Gera um QR Code base64 simples para demonstração
-function generateDemoQrCodeBase64(): string {
-  // Este é um placeholder - em produção, o QR Code real virá da API
-  // Retorna um SVG simples convertido para base64
-  const svgQrCode = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-      <rect width="200" height="200" fill="white"/>
-      <rect x="20" y="20" width="40" height="40" fill="black"/>
-      <rect x="140" y="20" width="40" height="40" fill="black"/>
-      <rect x="20" y="140" width="40" height="40" fill="black"/>
-      <rect x="80" y="80" width="40" height="40" fill="black"/>
-      <rect x="30" y="30" width="20" height="20" fill="white"/>
-      <rect x="150" y="30" width="20" height="20" fill="white"/>
-      <rect x="30" y="150" width="20" height="20" fill="white"/>
-      <rect x="35" y="35" width="10" height="10" fill="black"/>
-      <rect x="155" y="35" width="10" height="10" fill="black"/>
-      <rect x="35" y="155" width="10" height="10" fill="black"/>
-      <text x="100" y="195" text-anchor="middle" font-size="10" fill="#666">DEMO PIX</text>
-    </svg>
-  `;
-  
-  return Buffer.from(svgQrCode).toString("base64");
+// Gera um QR Code base64 real para demonstração
+async function generateDemoQrCodeBase64(): Promise<string> {
+  try {
+    // Gera um código PIX válido para o QR Code
+    const pixCode = `00020126580014br.gov.bcb.pix0136${nanoid(36)}5204000053039865406${(29.90).toFixed(2)}5802BR5925ESCOLHA DIVINA LTDA6009SAO PAULO62070503***6304`;
+    
+    // Gera o QR Code como PNG em base64
+    const qrCodeDataUrl = await QRCode.toDataURL(pixCode, {
+      errorCorrectionLevel: 'H',
+      type: 'image/png',
+      width: 300,
+      margin: 1,
+      color: {
+        dark: '#000000',
+        light: '#FFFFFF',
+      },
+    });
+    
+    // Remove o prefixo data:image/png;base64, para retornar apenas o base64
+    return qrCodeDataUrl.split(',')[1] || '';
+  } catch (error) {
+    console.error('Erro ao gerar QR Code:', error);
+    // Retorna um placeholder em caso de erro
+    return '';
+  }
 }
