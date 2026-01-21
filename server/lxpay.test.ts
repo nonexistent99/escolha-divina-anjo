@@ -1,14 +1,26 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { createPixPayment, checkPaymentStatus } from "./lxpay";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+
+// Mock das variáveis de ambiente antes de importar o módulo
+const originalEnv = process.env;
 
 describe("LX Pay Integration", () => {
   beforeEach(() => {
+    // Limpa as variáveis de ambiente antes de cada teste
+    process.env = { ...originalEnv };
+    delete process.env.LXPAY_PUBLIC_KEY;
+    delete process.env.LXPAY_SECRET_KEY;
     vi.resetModules();
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
   });
 
   describe("createPixPayment", () => {
     it("should return demo data when API keys are not configured", async () => {
-      // Sem chaves configuradas, deve retornar dados de demonstração
+      // Importa o módulo após limpar as variáveis de ambiente
+      const { createPixPayment } = await import("./lxpay.js");
+      
       const result = await createPixPayment({
         amount: 29.90,
         client: {
@@ -35,6 +47,8 @@ describe("LX Pay Integration", () => {
     });
 
     it("should generate valid PIX copy-paste code format", async () => {
+      const { createPixPayment } = await import("./lxpay.js");
+      
       const result = await createPixPayment({
         amount: 29.90,
         client: {
@@ -57,6 +71,8 @@ describe("LX Pay Integration", () => {
     });
 
     it("should include correct amount in response", async () => {
+      const { createPixPayment } = await import("./lxpay.js");
+      
       const amount = 29.90;
       const result = await createPixPayment({
         amount,
@@ -80,6 +96,8 @@ describe("LX Pay Integration", () => {
 
   describe("checkPaymentStatus", () => {
     it("should return pending status for demo transactions", async () => {
+      const { checkPaymentStatus } = await import("./lxpay.js");
+      
       const result = await checkPaymentStatus("demo_test123");
 
       expect(result).toBeDefined();

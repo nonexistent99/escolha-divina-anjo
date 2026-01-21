@@ -3,7 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { createPixPayment, checkPaymentStatus } from "./lxpay";
+import { createPixPayment, checkPaymentStatus } from "./lxpay.js";
 
 export const appRouter = router({
   system: systemRouter,

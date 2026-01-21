@@ -363,11 +363,13 @@ export default function Home() {
           
           <Button
             onClick={handleCTAClick}
-            className="btn-divine w-full text-base md:text-lg py-6 animate-glow"
+            className="btn-divine w-full max-w-full text-sm sm:text-base py-6 px-4 animate-glow whitespace-normal h-auto"
           >
-            <span className="flex flex-col md:flex-row items-center justify-center gap-2 text-center leading-tight">
-              <Dove className="w-6 h-6 shrink-0 hidden md:block" />
-              <span className="uppercase font-bold">SE VOCÊ PRECISA DE UM MILAGRE, CLIQUE AQUI PARA VER O VÍDEO QUE MUDARÁ SUA VIDA</span>
+            <span className="flex flex-col items-center justify-center gap-1 text-center leading-snug">
+              <Dove className="w-5 h-5 shrink-0" />
+              <span className="uppercase font-bold break-words">SE VOCÊ PRECISA DE UM MILAGRE,</span>
+              <span className="uppercase font-bold break-words">CLIQUE AQUI PARA VER O VÍDEO</span>
+              <span className="uppercase font-bold break-words">QUE MUDARÁ SUA VIDA</span>
             </span>
           </Button>
         </div>

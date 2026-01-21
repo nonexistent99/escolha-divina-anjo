@@ -5,7 +5,7 @@ import { AngelWings, DivineStar, FloatingParticles } from "@/components/AngelIco
 import { cn } from "@/lib/utils";
 
 // Configuração do tempo para mostrar o botão CTA (em segundos)
-const CTA_DELAY_SECONDS = 1524; // ~25 minutos
+const CTA_DELAY_SECONDS = 5; // 5 segundos para teste (alterar para 1524 em produção = ~25 minutos)
 
 interface Comment {
   id: number;
@@ -223,12 +223,58 @@ export default function Video() {
 
         {/* CTA Button - Hidden until time */}
         <div className={cn("cta-hidden mb-8", showCTA ? "block" : "hidden")}>
-          <Button
-            onClick={handleCTAClick}
-            className="w-full max-w-xl mx-auto block bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white font-bold py-5 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition-all animate-pulse"
-          >
-            ADQUIRA AS ÚLTIMAS UNIDADES DO MANUSCRITO SAGRADO 🙏
-          </Button>
+          <div className="max-w-md mx-auto space-y-4">
+            <div className="bg-gradient-to-r from-[#d4af37] to-[#b8962e] p-1 rounded-2xl shadow-2xl">
+              <div className="bg-white rounded-xl p-6 text-center space-y-4">
+                <div className="flex items-center justify-center gap-2">
+                  <DivineStar className="w-6 h-6 text-[#d4af37]" />
+                  <span className="text-[#d4af37] font-bold text-lg uppercase tracking-wide">Oferta Especial</span>
+                  <DivineStar className="w-6 h-6 text-[#d4af37]" />
+                </div>
+                
+                <h3 className="text-2xl font-bold text-foreground">
+                  As 5 Palavras Ungidas
+                </h3>
+                
+                <p className="text-muted-foreground text-sm">
+                  Receba agora as palavras sagradas reveladas pelo Arcanjo Miguel que transformarão sua vida
+                </p>
+                
+                <div className="py-2">
+                  <span className="text-muted-foreground line-through text-lg">De R$ 97,00</span>
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-4xl font-bold text-[#d4af37]">R$ 29,90</span>
+                  </div>
+                  <span className="text-green-600 text-sm font-medium">Economia de R$ 67,10</span>
+                </div>
+                
+                <Button
+                  onClick={handleCTAClick}
+                  className="w-full bg-gradient-to-r from-[#d4af37] to-[#b8962e] hover:from-[#c9a432] hover:to-[#a88526] text-white font-bold py-5 px-8 rounded-xl text-lg shadow-lg hover:shadow-xl transition-all"
+                >
+                  <span className="flex flex-col items-center gap-1">
+                    <span>🙏 QUERO RECEBER MINHA UNÇÃO</span>
+                    <span className="text-xs font-normal opacity-90">Pagamento 100% Seguro via PIX</span>
+                  </span>
+                </Button>
+                
+                <div className="flex items-center justify-center gap-4 pt-2">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Acesso Imediato</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Garantia de 7 dias</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Trust Badges */}
