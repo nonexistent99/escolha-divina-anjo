@@ -31,3 +31,6 @@
 ## Bugs Corrigidos
 - [x] Botão CTA "SE VOCÊ PRECISA DE UM MILAGRE..." estava fora de escala/saindo da tela
 - [x] Botão CTA corrigido para ficar dentro do container
+
+## Bugs Pendentes
+- [x] Card de oferta "5 Palavras Ungidas" está fora de escala/saindo do container

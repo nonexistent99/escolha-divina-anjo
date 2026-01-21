@@ -222,9 +222,9 @@ export default function Video() {
         </div>
 
         {/* CTA Button - Hidden until time */}
-        <div className={cn("cta-hidden mb-8", showCTA ? "block" : "hidden")}>
-          <div className="max-w-md mx-auto space-y-4">
-            <div className="bg-gradient-to-r from-[#d4af37] to-[#b8962e] p-1 rounded-2xl shadow-2xl">
+        <div className={cn("cta-hidden mb-8 w-full overflow-hidden px-4", showCTA ? "block" : "hidden")}>
+          <div className="max-w-sm mx-auto space-y-4">
+            <div className="bg-gradient-to-r from-[#d4af37] to-[#b8962e] p-1 rounded-2xl shadow-2xl w-full">
               <div className="bg-white rounded-xl p-6 text-center space-y-4">
                 <div className="flex items-center justify-center gap-2">
                   <DivineStar className="w-6 h-6 text-[#d4af37]" />
