@@ -212,16 +212,16 @@ export default function Checkout() {
 
                 <div className="space-y-6">
                   {/* QR Code */}
-                  <div className="bg-white p-4 rounded-xl border border-[#d4af37]/30 text-center">
+                  <div className="bg-white p-4 rounded-xl border border-[#d4af37]/30 text-center flex justify-center">
                     {pixData?.qrCode ? (
                       <img
                         src={`data:image/png;base64,${pixData.qrCode}`}
                         alt="QR Code PIX"
-                        className="w-48 h-48 mx-auto"
+                        className="w-40 h-40 sm:w-48 sm:h-48 object-contain"
                       />
                     ) : (
-                      <div className="w-48 h-48 mx-auto bg-muted rounded-lg flex items-center justify-center">
-                        <QrCode className="w-16 h-16 text-muted-foreground" />
+                      <div className="w-40 h-40 sm:w-48 sm:h-48 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
+                        <QrCode className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground" />
                       </div>
                     )}
                   </div>
@@ -229,17 +229,17 @@ export default function Checkout() {
                   {/* Copy Paste */}
                   <div className="space-y-2">
                     <Label>Código PIX Copia e Cola</Label>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-col sm:flex-row">
                       <Input
                         value={pixData?.copyPaste || ""}
                         readOnly
-                        className="font-mono text-xs"
+                        className="font-mono text-xs overflow-x-auto"
                       />
                       <Button
                         type="button"
                         onClick={handleCopyPix}
                         variant="outline"
-                        className="border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37]/10 shrink-0"
+                        className="border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37]/10 shrink-0 w-full sm:w-auto"
                       >
                         {copied ? (
                           <Check className="w-5 h-5" />
