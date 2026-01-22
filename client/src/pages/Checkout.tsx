@@ -215,13 +215,15 @@ export default function Checkout() {
                   <div className="bg-white p-4 rounded-xl border border-[#d4af37]/30 text-center flex justify-center">
                     {pixData?.qrCode ? (
                       <img
-                        src={`data:image/png;base64,${pixData.qrCode}`}
+                        src={pixData.qrCode}
                         alt="QR Code PIX"
                         className="w-40 h-40 sm:w-48 sm:h-48 object-contain"
+                        onError={() => console.error('QR Code image failed to load')}
                       />
                     ) : (
-                      <div className="w-40 h-40 sm:w-48 sm:h-48 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-40 h-40 sm:w-48 sm:h-48 bg-muted rounded-lg flex items-center justify-center flex-shrink-0 flex-col gap-2">
                         <QrCode className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground" />
+                        <p className="text-xs text-muted-foreground">Gerando QR Code...</p>
                       </div>
                     )}
                   </div>

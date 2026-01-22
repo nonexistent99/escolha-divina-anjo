@@ -152,7 +152,11 @@ export async function createPixPayment(
     const qrCodeBase64 = response.data.pix?.base64 || '';
     const copyPasteCode = response.data.pix?.code || '';
     
-    return {
+    console.log("[LX Pay] QR Code length:", qrCodeBase64.length);
+    console.log("[LX Pay] Copy Paste length:", copyPasteCode.length);
+    console.log("[LX Pay] QR Code starts with:", qrCodeBase64.substring(0, 50));
+    
+    const result = {
       transactionId: response.data.transactionId,
       status: response.data.status,
       order: response.data.order || {
@@ -167,6 +171,9 @@ export async function createPixPayment(
           new Date(Date.now() + 30 * 60 * 1000).toISOString(),
       },
     };
+    
+    console.log("[LX Pay] Final result pix.qrCode length:", result.pix.qrCode.length);
+    return result;
   } catch (error: any) {
     console.error("[LX Pay] Error creating PIX payment:", {
       message: error?.message,
